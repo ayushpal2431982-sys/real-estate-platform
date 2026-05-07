@@ -614,11 +614,13 @@ export const adminContactsStyles = {
   export const landingPageStyles = {
     // Layout
     bgMain: "bg-bg-main",
-    container: "container ",
+    container: "container",
   
-    // Hero section
+    // ─── HERO SECTION (FIXED) ───────────────────────────────────────────────────
+    // Changed: items-center → items-stretch so both columns match height
     heroSection:
-      "fade-in items-center justify-center  hero-section pt-32 pb-16 xl:px-40 md:px-20 flex items-center gap-16 overflow-hidden md:flex-col lg:flex-col xl:flex-row max-lg:flex-col max-lg:text-center max-lg:pt-28 max-lg:pb-8 max-lg:px-4 max-lg:gap-8",
+      "fade-in hero-section pt-32 pb-16 xl:px-40 md:px-20 flex items-stretch gap-16 overflow-hidden xl:flex-row max-lg:flex-col max-lg:items-center max-lg:text-center max-lg:pt-28 max-lg:pb-8 max-lg:px-4 max-lg:gap-8",
+
     heroContent:
       "hero-content flex-1 max-lg:flex max-lg:flex-col max-lg:items-center",
     badge: "badge bg-primary-light text-primary-dark mb-6 inline-block",
@@ -654,11 +656,23 @@ export const adminContactsStyles = {
     statItemBorder:
       "stat-item border-l border-border-color pl-[clamp(1rem,3vw,4rem)] flex-1 max-lg:pl-8 max-md:border-none max-md:pl-0 max-md:flex-none max-md:shrink-0 max-md:basis-[120px]",
   
-    // Hero image
-    heroImageContainer: "hero-image-container flex-1 relative ",
-    imageWrapper:
-      "rounded-[3rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] relative",
-    heroImage: "w-full h-[600px] object-cover",
+      heroImageContainer: "hero-image-container flex-[8] relative flex items-center justify-center max-lg:w-full",
+
+      imageWrapper:
+        "rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.25)] relative w-full",
+      
+        heroImage: "w-full object-cover h-[510px] max-lg:h-[900px] max-md:h-[950px] min-w-[600px]",
+    
+    
+
+    
+   
+    
+
+    
+    
+    
+
     verifiedBadge:
       "glass absolute bottom-8 left-8 p-6 rounded-3xl flex items-center gap-4 max-w-[300px]",
     badgeIconWrapper: "bg-primary-light p-3 rounded-2xl",
