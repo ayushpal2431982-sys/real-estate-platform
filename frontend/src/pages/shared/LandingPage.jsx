@@ -54,7 +54,7 @@ const LandingPage = () => {
         try {
             const isWishlited = wishlistedIds.includes(propertyId);
             if (isWishlited) {
-                await axios.delete(`${API_URL}/api/wishlist${propertyId}`, {
+                await axios.delete(`${API_URL}/api/wishlist/${propertyId}`, {
                     headers: { Authorization: `Bearer ${token}`},
                 });
                 setWishlistedIds((prev) => prev.filter((id) => id !== propertyId));
@@ -199,6 +199,136 @@ const LandingPage = () => {
                 <div className={s.heroImageContainer}>
                     <div className={s.imageWrapper}>
                         <img src={banner} alt="banner" className={s.heroImage} />
+                        
+                        <div className={s.verifiedBadge}>
+                            <div className={s.badgeIconWrapper}>
+                                <HiShieldCheck size={24} className='text-primary' />
+                            </div>
+                            <div>
+                                <h4 className={s.badgeTitle}>Verifies Listing</h4>
+                                <p className={s.badgeText}>
+                                    Inspected by our professional team
+                                </p>
+                            </div>
+                            <span className={s.preApproved}>pre-Approved</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {/* Category section*/}
+            <section className={s.categorySection}>
+                <div className={s.container}>
+                    <div className={s.categoryHeader}>
+                        <div className={s.categoryHeaderText}>
+                            <h2 className={s.categoryTitle}>Browse by category</h2>
+                            <p className={s.categoryDesc}>
+                                Explore curated collections of properties tailored to your specific
+                                lifestyleand needs.
+                            </p>
+                        </div>
+                    </div>
+                    <div className={s.categoryGrid}>
+                        {categories.map((cat, idx) => (
+                            <div key={idx} className={s.categoryCard} onClick={() => navigate(`/properties?type=${cat.type}`)}
+                            
+                            >
+                                <div className={s.categoryIconWrapper}>{cat.icon}</div>
+                                <h3 className={s.categoryName}>{cat.name}</h3>
+                                <p className={s.categoryCount}>{cat.count.toLocaleString()} properties
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+            {/*  features section*/}
+            <section className={s.featuredSection}>
+                <div className={s.featuresContainer}>
+                    <div className={s.featuresList}>
+                        {features.map((f, idx) => (
+                            <div key={idx} className={s.featureCard}
+                            style={{animationDelay: `${idx * 0.1}s`}}
+                            
+                            >
+                                <div className={s.featureIconWrapper}>{f.icon}</div>
+                                <h3 className={s.featureTitle}>{f.title}</h3>
+                                <p className={s.featureDesc}>{f.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className={s.featuresContent}>
+                        <h2 className={s.featuresHeading}>Why Real Estate <br />
+                        is the <span className={s.textGradient}>Preferred Choice</span>
+                        </h2>
+                        <p className={s.featuresSubtext}>
+                          We've reinvented the property search experience from the ground
+                          up. By focusing on transparency, technological precision, and
+                          user-centric design, we help you find not just a house, but a
+                          home.
+                        </p>
+
+                        <ul className={s.featuresListItems}>
+                        {[
+                                "Direct connection with certified agents",
+                                "Real-time market valuation data",
+                                "Secure document management system",
+                                "24/7 Premium customer support",
+                              ].map((item, idx) => (
+                            
+                                <li key={idx} className={s.listItem}>
+                                    <HiLightningBolt className='text-primary'/> {item}
+                                </li>
+                              ))}
+                        </ul>
+                        <a href="#process" className={s.learnMoreLink}>
+                            Learn more about our process &rarr;
+                        </a>
+                    </div>
+                </div>
+            </section>
+            {/*  how it works*/}
+            <section id='process' className={s.processSection}>
+                <div className={s.container}>
+                    <div className={s.processHeader}>
+                    <span className={s.processBadge}>How It Works</span>
+                    <h2 className={s.processTitle}>
+                        Our Seamless <span className={s.textGradient}>Process</span>
+                    </h2>
+                    <p className={s.processSubtitle}>
+                        We've simplified the journey of finding your dream home into three
+                        clear, stress-free steps.
+                    </p>
+                    </div>
+                    <div className={s.processGrid}>
+                    
+            {[
+              {
+                step: "01",
+                title: "Smart Search",
+                desc: "Leverage our AI-driven Smart Search algorithms to find the best property matches tailored to your specific preferences.",
+                icon: <HiLightningBolt size={32} />,
+              },
+              {
+                step: "02",
+                title: "Virtual Tours",
+                desc: "Experience your future home from anywhere with our high-definition 3D virtual tours and immersive walkthroughs.",
+                icon: <HiVideoCamera size={32} />,
+              },
+              {
+                step: "03",
+                title: "Verified Trust",
+                desc: "Every listing is strictly audited for ownership and condition, ensuring your peace of mind and a secure transaction.",
+                icon: <HiShieldCheck size={32} />,
+              },
+            ].map((p, idx) => (
+
+                <div key={idx} className={s.processCard}>
+                    <div className={s.stepNumber}>{p.step}</div>
+                    <div className={s.processIconWrapper}>{p.icon}</div>
+                    <h3 className={s.processCardTitle}>{p.title}</h3>
+                    <p className={s.processCardDesc}>{p.desc}</p>
+                </div>
+            ))}
                     </div>
                 </div>
             </section>
