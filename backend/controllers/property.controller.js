@@ -67,6 +67,7 @@ export const getMyProperties = async (req, res) => {
       properties,
     });
   } catch (error) {
+    console.error("GET_MY_PROPERTIES_ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -124,7 +125,9 @@ export const updateProperty = async (req, res) => {
     if (req.body.existingImages) {
       try {
         const existing = JSON.parse(req.body.existingImages);
-        foundProperty.images = Array.isArray(existing) ? existing : foundProperty.images;
+        foundProperty.images = Array.isArray(existing)
+          ? existing
+          : foundProperty.images;
       } catch (e) {
         console.error("Failed to parse existingImages:", e);
       }
@@ -147,6 +150,7 @@ export const updateProperty = async (req, res) => {
       property: foundProperty,
     });
   } catch (error) {
+    console.error("UPDATE_PROPERTY_ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -165,7 +169,6 @@ export const deleteProperty = async (req, res) => {
       });
     }
 
-    // check the ownership
     if (foundProperty.seller.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -173,7 +176,6 @@ export const deleteProperty = async (req, res) => {
       });
     }
 
-    // delete images from cloudinary
     for (let imageUrl of foundProperty.images) {
       const publicId = imageUrl.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy("properties/" + publicId);
@@ -185,6 +187,7 @@ export const deleteProperty = async (req, res) => {
       message: "Property deleted successfully",
     });
   } catch (error) {
+    console.error("DELETE_PROPERTY_ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -203,7 +206,6 @@ export const updatePropertyStatus = async (req, res) => {
       });
     }
 
-    // check the ownership
     if (foundProperty.seller.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -220,6 +222,7 @@ export const updatePropertyStatus = async (req, res) => {
       property: foundProperty,
     });
   } catch (error) {
+    console.error("UPDATE_PROPERTY_STATUS_ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -300,6 +303,7 @@ export const getAllProperties = async (req, res) => {
       properties,
     });
   } catch (error) {
+    console.error("GET_ALL_PROPERTIES_ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error while fetching properties",
@@ -315,10 +319,19 @@ export const getPropertyDetails = async (req, res) => {
       "seller",
       "name email phone profilePic",
     );
+
     if (!foundProperty) {
       return res.status(404).json({
         success: false,
         message: "Property not found",
+      });
+    }
+
+    // ✅ Fix: seller is null means seller account was deleted
+    if (!foundProperty.seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller account no longer exists.",
       });
     }
 
@@ -331,13 +344,21 @@ export const getPropertyDetails = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         visitorId = decoded.id;
       } catch (err) {
-        // ignore
+        // ignore invalid token
       }
     }
 
-    const isSellerChecking = visitorId === foundProperty.seller._id.toString();
-    if (!isSellerChecking && !foundProperty.ViewedBy.includes(visitorId)) {
-      foundProperty.ViewedBy.push(visitorId);
+    const isSellerChecking =
+      visitorId === foundProperty.seller._id.toString();
+
+    // ✅ Fix: ensure viewedBy is always an array
+    if (!Array.isArray(foundProperty.viewedBy)) {
+      foundProperty.viewedBy = [];
+    }
+
+    if (!isSellerChecking && !foundProperty.viewedBy.includes(visitorId)) {
+      foundProperty.viewedBy.push(visitorId);
+      foundProperty.views = (foundProperty.views || 0) + 1;
       await foundProperty.save();
     }
 
@@ -356,6 +377,7 @@ export const getPropertyDetails = async (req, res) => {
       similarProperties,
     });
   } catch (error) {
+    console.error("GET_PROPERTY_DETAILS_ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -379,7 +401,6 @@ export const getSellerDashboard = async (req, res) => {
 
     const totalInquiries = await Inquiry.countDocuments({ seller: sellerId });
 
-    // calculate total views for all properties
     const viewData = await Property.aggregate([
       { $match: { seller: sellerId } },
       { $group: { _id: null, totalViews: { $sum: "$views" } } },
@@ -397,6 +418,7 @@ export const getSellerDashboard = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("GET_SELLER_DASHBOARD_ERROR:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -422,6 +444,7 @@ export const getPropertyCounts = async (req, res) => {
       counts: formattedCounts,
     });
   } catch (error) {
+    console.error("GET_PROPERTY_COUNTS_ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error while fetching counts",

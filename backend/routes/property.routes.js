@@ -9,17 +9,28 @@ const propertyRouter = express.Router();
 
 propertyRouter.get("/", getAllProperties);
 
-//protect the routes that only seller can do this work
-propertyRouter.post("/", protect, authorize("seller"), upload.array("images", 10), addProperty);
+// ✅ Static routes FIRST
+propertyRouter.get("/counts", getPropertyCounts);
+propertyRouter.get("/seller/dashboard", protect, authorize("seller"), getSellerDashboard);
 propertyRouter.get("/my", protect, authorize("seller"), getMyProperties);
-propertyRouter.put("/:id", protect, authorize("seller"), upload.array("images", 10), updateProperty);
 
+// ✅ Dynamic route LAST
+propertyRouter.get("/:id", getPropertyDetails);
+
+// ✅ Other dynamic routes
+propertyRouter.post("/", protect, authorize("seller"), upload.array("images", 10), addProperty);
+propertyRouter.put("/:id", protect, authorize("seller"), upload.array("images", 10), updateProperty);
 propertyRouter.delete("/:id", protect, authorize("seller"), deleteProperty);
 propertyRouter.patch("/:id/status", protect, authorize("seller"), updatePropertyStatus);
 
-propertyRouter.get("/counts", getPropertyCounts);
-propertyRouter.get("/:id", getPropertyDetails);
-
-propertyRouter.get("/seller/dashboard", protect, authorize("seller"), getSellerDashboard);
-
 export default propertyRouter;
+
+
+
+
+
+
+
+
+
+
