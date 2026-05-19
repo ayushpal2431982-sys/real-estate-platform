@@ -93,7 +93,7 @@ export const login = async (req, res) => {
             { expiresIn: "7d" }
         );
 
-        // ✅ Fix: exclude password from response
+        // Exclude password from response
         const safeUser = await User.findById(user._id).select("-password");
 
         res.json({
@@ -151,7 +151,7 @@ export const verifyEmail = async (req, res) => {
 
         user.isVerified = true;
         user.verificationToken = undefined;
-        await user.save();
+        await user.save({ validateBeforeSave: false });
 
         res.status(200).json({
             message: "Email verified successfully",
@@ -178,9 +178,9 @@ export const forgotPassword = async (req, res) => {
         const resetToken = crypto.randomBytes(20).toString("hex");
         const resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 mins
 
-        user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-        user.resetPasswordExpire = resetPasswordExpire;
-        await user.save();
+        user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");  // ✅ Fixed
+        user.resetPasswordExpire = resetPasswordExpire;  // ✅ Fixed
+        await user.save({ validateBeforeSave: false });  // ✅ Fixed
 
         const clientUrl = "http://localhost:5173";
         const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
@@ -199,9 +199,9 @@ export const forgotPassword = async (req, res) => {
             });
             res.status(200).json({ message: "Password reset email sent", success: true });
         } catch (error) {
-            user.resetPasswordToken = undefined;
-            user.resetPasswordExpire = undefined;
-            await user.save();
+            user.resetPasswordToken = undefined;  // ✅ Fixed
+            user.resetPasswordExpire = undefined; // ✅ Fixed
+            await user.save({ validateBeforeSave: false });  // ✅ Fixed
             return res.status(500).json({ message: "Could not send email", success: false });
         }
     } catch (err) {
@@ -218,8 +218,8 @@ export const resetPassword = async (req, res) => {
         const resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
 
         const user = await User.findOne({
-            resetPasswordToken,
-            resetPasswordExpire: { $gt: Date.now() },
+            resetPasswordToken,                              // ✅ Fixed
+            resetPasswordExpire: { $gt: Date.now() },       // ✅ Fixed
         });
 
         if (!user) {
@@ -230,9 +230,9 @@ export const resetPassword = async (req, res) => {
         }
 
         user.password = await bcrypt.hash(password, 10);
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
-        await user.save();
+        user.resetPasswordToken = undefined;   // ✅ Fixed
+        user.resetPasswordExpire = undefined;  // ✅ Fixed
+        await user.save({ validateBeforeSave: false });  // ✅ Fixed
 
         res.status(200).json({
             message: "Password reset successful",

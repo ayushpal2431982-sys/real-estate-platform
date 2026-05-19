@@ -44,7 +44,7 @@ const PropertyCard =  ({
         <Link to={`/property/${property._id}`} className={s.link}>
         <div className={s.imageSection}>
         <img 
-             src={property.image?.[0] || '/placeholder.jpg'} 
+             src={property.images?.[0] || '/placeholder.jpg'} 
              alt={property.title || 'Property'} 
              className={s.image}
             />

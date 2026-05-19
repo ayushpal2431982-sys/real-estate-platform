@@ -1,4 +1,4 @@
-import mongoose  from "mongoose";
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -43,13 +43,13 @@ const userSchema = new mongoose.Schema({
     verificationToken: {
         type: String
     },
-    resetpasswordToken: {
+    resetPasswordToken: {        // ✅ Fixed: capital P
         type: String
     },
-    resetpasswordExpire: {
+    resetPasswordExpire: {       // ✅ Fixed: capital P
         type: Date
     }
-}, { timestamps: true});
+}, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
 
