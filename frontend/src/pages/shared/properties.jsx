@@ -399,7 +399,7 @@ const Properties = () => {
                                     <PropertyCard
                                         key={property._id}
                                         property={property}
-                                        renderActions={false}
+                                        // renderActions={false}
                                         isWishlisted={wishlistedIds.includes(String(property._id))}
                                         onToggleWishlist={handleToggleWishlist}
                                     />

@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import 'dotenv/config';
 import http from 'http';
 import { Server } from 'socket.io';
 import { connectDB } from './config/db.js';
@@ -12,25 +12,23 @@ import whishlistRouter from './routes/whishlist.routes.js';
 import chatRouter from './routes/chat.routes.js';
 import contactRouter from './routes/contact.routes.js';
 import adminRouter from './routes/admin.routes.js';
-import { Socket } from 'socket.io';
-
-
 
 const app = express();
 const PORT = 5000;
 
-//DB
+// DB
 connectDB();
 
 // Middleware
 const allowedOrigins = [
     "http://localhost:5173",
 ].filter(Boolean);
+
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
-        }else{
+        } else {
             callback(new Error("Not allowed by CORS"));
         }
     },
@@ -38,12 +36,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
-//Routes
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/property", propertyRouter);
 app.use("/api/inquiry", inquiryRouter);
-app.use("/api/whishlist", whishlistRouter);
+app.use("/api/wishlist", whishlistRouter); // ✅ Fixed: was /api/whishlist
 app.use("/api/contact", contactRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/chat", chatRouter);
@@ -53,8 +51,8 @@ app.get('/', (req, res) => {
 });
 
 const server = http.createServer(app);
-//socket.io setup
 
+// Socket.io setup
 const io = new Server(server, {
     cors: {
         origin: allowedOrigins,
@@ -71,10 +69,9 @@ io.on("connection", (socket) => {
         io.to(data.chatId).emit("receiveMessage", data);
     });
 
-    socket.on("disconnect", () => {
-    });
-})
+    socket.on("disconnect", () => {});
+});
 
 server.listen(PORT, () => {
-    console.log(`server running on http://localhost:${PORT}`)
+    console.log(`server running on http://localhost:${PORT}`);
 });

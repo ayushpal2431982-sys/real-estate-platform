@@ -423,7 +423,7 @@ const LandingPage = () => {
                   <PropertyCard
                     key={property._id}
                     property={property}
-                    isWishlisted={wishlistedIds.includes(String(property._id))}
+                    isWhishlisted={wishlistedIds.includes(String(property._id))}
                     onToggleWishlist={handleToggleWishlist}
                   />
                 ))}

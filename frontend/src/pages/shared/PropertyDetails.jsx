@@ -20,7 +20,7 @@ import {
   HiOutlineViewGrid,
   HiX,
 } from "react-icons/hi";
-import PropertyCard from "../../components/common/PropertyCard"; // ✅ Fix 1: Missing import
+import PropertyCard from "../../components/common/PropertyCard";
 
 const PropertyDetails = () => {
   const { id } = useParams();
@@ -42,10 +42,11 @@ const PropertyDetails = () => {
     error: null,
   });
   const [isInWishlist, setIsInWishlist] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(null); // ✅ Fix 2: Moved to top with other states
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
+      // ✅ FIX: Property fetch in its own try/catch
       try {
         setLoading(true);
         const res = await axios.get(`${API_URL}/api/property/${id}`, {
@@ -53,20 +54,29 @@ const PropertyDetails = () => {
         });
         setProperty(res.data.property);
         setSimilarProperties(res.data.similarProperties || []);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load property details.");
+        setLoading(false);
+        return; // Stop here if property fetch fails
+      }
 
-        if (user && user.role === "buyer") {
+      // ✅ FIX: Wishlist fetch in a separate try/catch
+      // so a 404 on /api/wishlist does NOT break the whole page
+      if (user && user.role === "buyer") {
+        try {
           const wishRes = await axios.get(`${API_URL}/api/wishlist`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const found = wishRes.data.some((item) => item.property?._id === id);
           setIsInWishlist(found);
+        } catch (err) {
+          console.warn("Wishlist fetch failed:", err.message);
+          // Silently fail — wishlist not loading shouldn't block the page
         }
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to load property details.");
-        setLoading(false);
       }
     };
+
     fetchDetails();
   }, [id, user, token]);
 
@@ -264,7 +274,6 @@ const PropertyDetails = () => {
         {/* Lightbox */}
         {lightboxIndex !== null && (
           <div className={s.lightboxOverlay} onClick={closeLightbox}>
-            {/* ✅ Fix 3: Button had closeLightbox as className instead of onClick */}
             <button onClick={closeLightbox} className={s.lightboxCloseBtn}>
               <HiX size={24} className={s.lightboxCloseIcon} />
             </button>
@@ -488,7 +497,6 @@ const PropertyDetails = () => {
                     {inquiryStatus.success && (
                       <p className={s.inquirySuccessMessage}>Inquiry sent!</p>
                     )}
-                    {/* ✅ Fix 4: Show error message if inquiry fails */}
                     {inquiryStatus.error && (
                       <p style={{ color: "red", fontSize: "0.85rem" }}>
                         {inquiryStatus.error}
@@ -530,7 +538,6 @@ const PropertyDetails = () => {
               { label: "Status", value: `For ${property.status}` },
             ].map((detail, i) => (
               <div key={i} className={s.detailRow}>
-                {/* ✅ Fix 5: First span was using detailValue instead of detailLabel */}
                 <span className={s.detailLabel}>{detail.label}</span>
                 <span className={s.detailValue}>{detail.value}</span>
               </div>

@@ -21,17 +21,13 @@ const ProtectedRoute = ({allowedRoles}) => {
   if (user && allowedRoles && !allowedRoles.includes(user.role)) {
     if (user.role === "admin")
       return <Navigate to="/admin-dashboard" replace />;
-
     if (user.role === "seller") return <Navigate to="/dashboard" replace />;
     return <Navigate to="/" replace />;
   }
 
-
-
   return <Outlet />;
 };
 
-//public route
 const PublicRoute = () => {
   const {user, loading} = useAuth();
 
@@ -42,13 +38,15 @@ const PublicRoute = () => {
       </div>
     );
   }
-  if (user && allowedRoles && !allowedRoles.includes(user.role)) {
-    if (user.role === "admin")
-      return <Navigate to="/admin-dashboard" replace />;
+
+  if (user) {
+    if (user.role === "admin") return <Navigate to="/admin-dashboard" replace />;
     if (user.role === "seller") return <Navigate to="/dashboard" replace />;
     return <Navigate to="/" replace />;
   }
+
   return <Outlet />;
 };
 
-export default {ProtectedRoute, PublicRoute};
+export { ProtectedRoute, PublicRoute };
+export default ProtectedRoute;
