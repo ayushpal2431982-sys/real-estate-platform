@@ -1,4 +1,5 @@
 🏠 Real Estate Platform 
+
 🎯 Project Overview
 A full-stack MERN web application that enables property buyers, sellers, and admins to interact on a unified real estate platform. Sellers can list properties, buyers can search, filter, wishlist, and inquire about properties, while admins manage the entire ecosystem.
 
@@ -51,60 +52,6 @@ tted via contact form
 . Property Oversight: Monitor and manage all listings
 . Seller Approvals: Review and approve seller requests
 . Contact Management: View messages submitted via contact form
-
-Architecture Overview
-┌─────────────┐
-│   Client    │  (React + Vite)
-└──────┬──────┘
-       │
-       ├─────→ Public Routes
-       │       ├─ Landing Page
-       │       ├─ Properties (with filters)
-       │       └─ Property Details
-       │
-       ├─────→ Auth System
-       │       ├─ Register / Login
-       │       ├─ Email Verification
-       │       └─ Forgot / Reset Password
-       │
-       ├─────→ Buyer Features
-       │       ├─ Wishlist
-       │       ├─ Inquiries
-       │       └─ Chat Messages
-       │
-       ├─────→ Seller Features
-       │       ├─ Dashboard
-       │       ├─ Add / Edit / Delete Property
-       │       └─ My Properties
-       │
-       └─────→ Admin Features
-               ├─ User Management
-               ├─ Property Management
-               ├─ Seller Requests
-               ├─ Inquiry Management
-               └─ Contact Management
-
- Backend Architecture
-               ┌─────────────┐
-│  Express    │
-│   Server    │
-└──────┬──────┘
-       │
-       ├─────→ Auth Middleware (JWT verification)
-       │
-       ├─────→ User Routes & Controllers
-       │
-       ├─────→ Property Routes & Controllers
-       │       └─ Cloudinary (image upload)
-       │
-       ├─────→ Wishlist Routes & Controllers
-       │
-       ├─────→ Inquiry Routes & Controllers
-       │
-       ├─────→ Chat Routes & Controllers
-       │
-       └─────→ Admin Routes & Controllers
-               └─ Brevo API (email notifications)
                
  Technical Challenges Solved
 
